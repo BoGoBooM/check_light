@@ -1,34 +1,29 @@
 const express = require('express');
-const ping = require('ping');
 const cors = require('cors');
+const { exec } = require('child_process');
+
 const app = express();
 const port = 5000;
 
-// Налаштування CORS
-app.use(cors()); // Дозволити доступ з будь-якого джерела
+app.use(cors());
 
-app.use(express.json());
-
-app.get('/ping', async (req, res) => {
-  const { ip } = req.query;
-  if (!ip) {
-    console.log('IP address is required');
-    return res.status(400).json({ error: 'IP address is required' });
-  }
-
-  try {
-    console.log(`Pinging IP address: ${ip}`);
-    const result = await ping.promise.probe(ip);
-    console.log(`Ping result for ${ip}:`, result);
-    if (result.alive) {
-      res.json({ status: 'є світло' });
+app.get('/networks', (req, res) => {
+  exec('nmcli -t -f SSID,IP4 dev wifi', (error, stdout, stderr) => {
+    if (error) {
+      res.status(500).send(`Error: ${error.message}`);
+    } else if (stderr) {
+      res.status(500).send(`Stderr: ${stderr}`);
     } else {
-      res.json({ status: 'немає світла' });
+      const networks = stdout
+        .trim()
+        .split('\n')
+        .map(line => {
+          const [ssid, ip] = line.split(':');
+          return { ssid, ip };
+        });
+      res.json(networks);
     }
-  } catch (error) {
-    console.error('Error pinging the IP address:', error);
-    res.status(500).json({ error: 'Error pinging the IP address' });
-  }
+  });
 });
 
 app.listen(port, () => {
