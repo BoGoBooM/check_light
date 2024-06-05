@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/check_light/static/css/main.f76bcf3f.css",
+    "main.js": "/check_light/static/js/main.cc89ff4c.js",
+    "index.html": "/check_light/index.html",
+    "main.f76bcf3f.css.map": "/check_light/static/css/main.f76bcf3f.css.map",
+    "main.cc89ff4c.js.map": "/check_light/static/js/main.cc89ff4c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f76bcf3f.css",
+    "static/js/main.cc89ff4c.js"
+  ]
+}
